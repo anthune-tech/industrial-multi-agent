@@ -1,7 +1,7 @@
 import json
 
 import numpy as np
-from crewai.tools import tool
+from langchain.tools import tool
 
 
 @tool("Analyze Trend")

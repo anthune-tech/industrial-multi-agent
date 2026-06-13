@@ -1,5 +1,5 @@
 import json
-from crewai.tools import tool
+from langchain.tools import tool
 
 
 @tool("Query Results DB")

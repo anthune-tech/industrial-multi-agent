@@ -1,5 +1,5 @@
 import pandas as pd
-from crewai.tools import tool
+from langchain.tools import tool
 
 
 @tool("Read Plant Data")
