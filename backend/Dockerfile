@@ -1,6 +1,4 @@
-FROM python:3.12-slim
-
-RUN apt-get update -qq && apt-get install -y -qq --no-install-recommends g++ build-essential && rm -rf /var/lib/apt/lists/*
+FROM python:3.12
 
 WORKDIR /app
 COPY requirements.txt .

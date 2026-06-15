@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.routes_data import router as data_router
 from api.routes_agent import router as agent_router
 from db.connection import init_db
+from db.knowledge_base import seed_knowledge_base
 
 app = FastAPI(title="Industrial Plant Agent API")
 
@@ -22,6 +23,7 @@ app.include_router(agent_router, prefix="/api/agent", tags=["agent"])
 @app.on_event("startup")
 async def startup():
     init_db()
+    seed_knowledge_base()
 
 
 @app.get("/api/health")

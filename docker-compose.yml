@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
+    dns: 8.8.8.8
     environment:
       POSTGRES_DB: plant_mgmt
       POSTGRES_USER: plant
@@ -13,6 +14,7 @@ services:
 
   backend:
     build: ./backend
+    dns: 8.8.8.8
     ports:
       - "8000:8000"
     environment:
@@ -27,6 +29,7 @@ services:
 
   dashboard:
     build: ./dashboard
+    dns: 8.8.8.8
     ports:
       - "5173:5173"
     environment:
