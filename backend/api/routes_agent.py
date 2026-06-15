@@ -6,10 +6,12 @@ from agents.worker import WorkerAgent
 from tools.oee import calculate_oee
 from tools.data_io import read_plant_data
 from tools.analytics import analyze_trend
-from tools.knowledge import query_results_db, save_to_results_db
+from tools.knowledge import query_results_db, save_to_results_db, query_knowledge_base
 from tools.troubleshoot import detect_anomalies, generate_report, save_troubleshoot_session
 
 router = APIRouter()
+
+LLM_CONFIG = {"model": "gpt-4o-mini", "temperature": 0.1}
 
 
 class AnalyzeRequest(BaseModel):
@@ -25,7 +27,7 @@ class TroubleshootRequest(BaseModel):
 def _build_crew(task_agent):
     from crewai import Crew, Process, Task
 
-    reasoner = ReasonerAgent().get_agent()
+    reasoner = ReasonerAgent(llm_config=LLM_CONFIG).get_agent()
 
     analysis_task = Task(
         description=(
@@ -56,9 +58,10 @@ async def analyze(req: AnalyzeRequest):
         save_to_results_db,
         detect_anomalies,
         generate_report,
+        query_knowledge_base,
     ]
 
-    worker = WorkerAgent(tools=tools).get_agent()
+    worker = WorkerAgent(llm_config=LLM_CONFIG, tools=tools).get_agent()
     crew = _build_crew(worker)
 
     result = crew.kickoff(inputs={
@@ -76,10 +79,11 @@ async def troubleshoot(req: TroubleshootRequest):
         query_results_db,
         save_to_results_db,
         save_troubleshoot_session,
+        query_knowledge_base,
     ]
 
-    worker = WorkerAgent(tools=tools).get_agent()
-    reasoner = ReasonerAgent().get_agent()
+    worker = WorkerAgent(llm_config=LLM_CONFIG, tools=tools).get_agent()
+    reasoner = ReasonerAgent(llm_config=LLM_CONFIG).get_agent()
 
     from crewai import Crew, Task
 

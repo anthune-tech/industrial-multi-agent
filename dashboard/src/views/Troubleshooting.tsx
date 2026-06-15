@@ -7,6 +7,8 @@ interface Message {
   text: string
 }
 
+const MACHINES = ['LINE-01','LINE-02','LINE-03','LINE-04','LINE-05']
+
 export default function Troubleshooting() {
   const [machineId, setMachineId] = useState('LINE-03')
   const [problem, setProblem] = useState('')
@@ -38,7 +40,7 @@ export default function Troubleshooting() {
         <label>Machine: </label>
         <select value={machineId} onChange={e => setMachineId(e.target.value)}
           style={{ padding: '6px 12px', borderRadius: 4, border: '1px solid #ccc' }}>
-          {['LINE-01','LINE-02','LINE-03','LINE-04','LINE-05'].map(m => (
+          {MACHINES.map(m => (
             <option key={m} value={m}>{m}</option>
           ))}
         </select>
