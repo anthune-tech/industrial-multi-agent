@@ -1,10 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from api.routes_data import router as data_router
 from api.routes_agent import router as agent_router
 from db.connection import init_db
 from db.knowledge_base import seed_knowledge_base
+from scheduler.jobs import start_scheduler
+from ingestion.ingest import seed_sample_data
 
 app = FastAPI(title="Industrial Plant Agent API")
 
@@ -24,6 +29,8 @@ app.include_router(agent_router, prefix="/api/agent", tags=["agent"])
 async def startup():
     init_db()
     seed_knowledge_base()
+    seed_sample_data()
+    start_scheduler()
 
 
 @app.get("/api/health")

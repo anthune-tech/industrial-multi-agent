@@ -1,17 +1,19 @@
+import { useState } from 'react'
 import { usePoll } from '../hooks/usePoll'
-import { fetchLatestOEE } from '../api/client'
+import { fetchLatestOEE, OeeSnapshot } from '../api/client'
 import Gauge from '../components/Gauge'
 import TrendChart from '../components/TrendChart'
 
 export default function OEEDashboard() {
-  const { data } = usePoll(fetchLatestOEE, 30000)
+  const { data } = usePoll<OeeSnapshot[]>(fetchLatestOEE, 30000)
+  const [selectedMachine, setSelectedMachine] = useState('LINE-01')
   const machines = Array.isArray(data) ? data : []
 
   return (
     <div>
       <h2>OEE Dashboard</h2>
       <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-        {machines.map((m: any) => (
+        {machines.map((m) => (
           <div key={m.machine_id} style={{
             border: '1px solid #ddd', borderRadius: 8, padding: 16, width: 260,
           }}>
@@ -26,7 +28,16 @@ export default function OEEDashboard() {
         ))}
       </div>
       <div style={{ marginTop: 24 }}>
-        <TrendChart />
+        <div style={{ marginBottom: 12 }}>
+          <label>Machine: </label>
+          <select value={selectedMachine} onChange={e => setSelectedMachine(e.target.value)}
+            style={{ padding: '6px 12px', borderRadius: 4, border: '1px solid #ccc' }}>
+            {['LINE-01','LINE-02','LINE-03','LINE-04','LINE-05'].map(m => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+        </div>
+        <TrendChart machineId={selectedMachine} />
       </div>
     </div>
   )

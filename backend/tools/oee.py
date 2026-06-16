@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from langchain.tools import tool
 
 
@@ -8,7 +9,14 @@ def calculate_oee(machine_id: str, shift: str, date: str) -> str:
     Returns availability, performance, quality, and overall OEE."""
     from tools.data_io import read_plant_data
 
-    raw = json.loads(read_plant_data(machine_id, date, date))
+    if date == "today":
+        date = datetime.now().strftime("%Y-%m-%d")
+
+    raw = json.loads(read_plant_data.invoke({
+        "machine_id": machine_id,
+        "start_date": date,
+        "end_date": date,
+    }))
     if not raw:
         return json.dumps({"error": "No data available"})
 
@@ -19,9 +27,10 @@ def calculate_oee(machine_id: str, shift: str, date: str) -> str:
 
     availability = run_time / total_time if total_time > 0 else 0
 
-    ideal_cycle = 40
+    ideal_cycle_min = 40 / 60
     total_parts = sum(r["total_count"] for r in raw)
-    performance = (ideal_cycle * total_parts) / run_time if run_time > 0 else 0
+    performance = (ideal_cycle_min * total_parts) / run_time if run_time > 0 else 0
+    performance = min(performance, 1.0)
 
     good = sum(r["good_count"] for r in raw)
     quality = good / total_parts if total_parts > 0 else 0

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { runAnalyze } from '../api/client'
 
+const MACHINES = ['LINE-01','LINE-02','LINE-03','LINE-04','LINE-05']
+
 export default function DataAnalytics() {
   const [machineId, setMachineId] = useState('LINE-01')
   const [query, setQuery] = useState('Show me the OEE trend for last 7 days')
@@ -26,7 +28,7 @@ export default function DataAnalytics() {
         <label>Machine:</label>
         <select value={machineId} onChange={e => setMachineId(e.target.value)}
           style={{ padding: '6px 12px', borderRadius: 4, border: '1px solid #ccc' }}>
-          {['LINE-01','LINE-02','LINE-03','LINE-04','LINE-05'].map(m => (
+          {MACHINES.map(m => (
             <option key={m} value={m}>{m}</option>
           ))}
         </select>

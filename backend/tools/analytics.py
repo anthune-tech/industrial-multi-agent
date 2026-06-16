@@ -13,7 +13,11 @@ def analyze_trend(machine_id: str, metric: str, period_days: int = 7) -> str:
 
     end = pd.Timestamp.now().strftime("%Y-%m-%d")
     start = (pd.Timestamp.now() - pd.Timedelta(days=period_days)).strftime("%Y-%m-%d")
-    raw = json.loads(read_plant_data(machine_id, start, end))
+    raw = json.loads(read_plant_data.invoke({
+        "machine_id": machine_id,
+        "start_date": start,
+        "end_date": end,
+    }))
     if not raw:
         return json.dumps({"error": "No data available"})
 
